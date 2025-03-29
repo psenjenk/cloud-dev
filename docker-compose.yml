@@ -1,5 +1,17 @@
 version: '3.8'
 
+# Environment Variables Documentation:
+# Required:
+# - AZURE_SUBSCRIPTION_ID: Your Azure subscription ID
+# - GOOGLE_CLOUD_PROJECT: Your Google Cloud project ID
+# - AWS_PROFILE: AWS profile to use (default: default)
+# Optional:
+# - POSTGRES_USER: Database user (default: clouddev)
+# - POSTGRES_PASSWORD: Database password (default: development)
+# - POSTGRES_DB: Database name (default: clouddev)
+# - MINIO_ROOT_USER: MinIO admin user (default: minioadmin)
+# - MINIO_ROOT_PASSWORD: MinIO admin password (default: minioadmin)
+
 services:
   cloud-dev:
     build: .
@@ -11,25 +23,37 @@ services:
       - ~/.kube:/home/clouddev/.kube
       - ~/.terraform.d:/home/clouddev/.terraform.d
     environment:
-      - AWS_PROFILE=default
+      - AWS_PROFILE=${AWS_PROFILE:-default}
       - AZURE_SUBSCRIPTION_ID=${AZURE_SUBSCRIPTION_ID}
       - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT}
     ports:
       - "3000:3000"  # For local development
       - "8080:8080"  # For API endpoints
     command: /bin/bash
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   # Local development database
   postgres:
     image: postgres:13
     environment:
-      - POSTGRES_USER=clouddev
-      - POSTGRES_PASSWORD=development
-      - POSTGRES_DB=clouddev
+      - POSTGRES_USER=${POSTGRES_USER:-clouddev}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-development}
+      - POSTGRES_DB=${POSTGRES_DB:-clouddev}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-clouddev} -d ${POSTGRES_DB:-clouddev}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   # Redis for caching
   redis:
@@ -38,6 +62,12 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   # MinIO for local S3-compatible storage
   minio:
@@ -46,11 +76,17 @@ services:
       - "9000:9000"
       - "9001:9001"
     environment:
-      - MINIO_ROOT_USER=minioadmin
-      - MINIO_ROOT_PASSWORD=minioadmin
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER:-minioadmin}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-minioadmin}
     volumes:
       - minio_data:/data
     command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+      start_period: 30s
 
 volumes:
   postgres_data:
