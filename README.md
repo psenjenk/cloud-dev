@@ -2,173 +2,153 @@
 
 ## About
 
-This repository contains a comprehensive guide and automation scripts for deploying cloud infrastructure across multiple cloud providers (AWS, Azure, and GCP). It serves as a practical reference for developers who need to work with different cloud platforms, offering both CLI-based and Infrastructure-as-Code (Terraform) approaches.
+This repository provides a comprehensive toolkit for deploying and managing cloud infrastructure across multiple cloud providers (AWS, Azure, and GCP) with a focus on data platform infrastructure. It combines Infrastructure as Code (Terraform) with CLI-based approaches to offer flexibility in deployment methods.
 
-Key features:
-- Multi-cloud deployment guides
-- Infrastructure as Code examples using Terraform
-- Docker containerization support
-- Step-by-step CLI instructions
-- Best practices for cloud resource management
-- Data platform infrastructure (Databricks and Snowflake)
-
-This guide provides practical steps for deploying resources on AWS, Azure, and GCP using both CLI commands and Terraform.
-
-## Data Platform Infrastructure
-
-### Overview
-
-The repository includes Terraform configurations for deploying and managing a data platform infrastructure using Azure Databricks and Snowflake.
-
-### Configuration Structure
-
-The data platform configuration is organized into the following structure:
+## Project Structure
 
 ```
-configs/
-├── main.tfvars                    # Main configuration file with common settings
-├── databricks/
-│   ├── main.tfvars               # Databricks-specific configuration
-│   └── variables.tf              # Databricks variable definitions
-└── snowflake/
-    ├── main.tfvars               # Snowflake-specific configuration
-    └── variables.tf              # Snowflake variable definitions
+.
+├── cloud-providers/           # Cloud provider specific configurations
+│   ├── aws/                  # AWS specific resources and configurations
+│   ├── azure/                # Azure specific resources and configurations
+│   └── gcp/                  # GCP specific resources and configurations
+├── configs/                  # Main configuration directory
+│   ├── databricks/          # Databricks specific configurations
+│   ├── snowflake/           # Snowflake specific configurations
+│   ├── main.tfvars          # Main configuration file
+│   ├── databricks.tfvars    # Databricks variables
+│   └── snowflake.tfvars     # Snowflake variables
+├── terraform/               # Core Terraform configurations
+├── Dockerfile              # Container definition
+├── docker-compose.yml      # Container orchestration
+└── settings.json          # Project settings
 ```
 
-#### Core Configuration Files
+## Features
 
-- `configs/main.tfvars`: Main configuration file containing common variables and references to Databricks and Snowflake configurations
-- `configs/databricks/main.tfvars`: Databricks-specific configuration including workspace, network, and cluster settings
-- `configs/snowflake/main.tfvars`: Snowflake-specific configuration including database, warehouse, and user settings
+- **Multi-Cloud Support**
+  - AWS infrastructure deployment
+  - Azure resource management
+  - GCP service configuration
 
-### Prerequisites for Data Platform
+- **Data Platform Infrastructure**
+  - Azure Databricks workspace deployment
+  - Snowflake account and resource management
+  - Integrated data storage solutions
+
+- **Infrastructure as Code**
+  - Terraform-based deployments
+  - Modular configuration structure
+  - Version-controlled infrastructure
+
+- **Containerization**
+  - Docker support
+  - Containerized deployment options
+  - Development environment consistency
+
+## Prerequisites
 
 - Terraform >= 1.0.0
-- Azure CLI (for Databricks deployment)
-- Snowflake account and credentials
-- Azure subscription with appropriate permissions
+- Docker and Docker Compose
+- Cloud provider CLIs:
+  - AWS CLI
+  - Azure CLI
+  - Google Cloud SDK
+- Cloud provider accounts and credentials
+- Snowflake account (for data platform features)
 
-### Configuration Components
+## Quick Start
 
-#### Databricks Configuration
-
-The Databricks configuration includes:
-
-- Workspace settings (name, location, SKU)
-- Network configuration (optional VNet integration)
-- Cluster configuration
-  - Node types
-  - Worker counts
-  - Auto-termination settings
-- Resource group management
-
-#### Snowflake Configuration
-
-The Snowflake configuration includes:
-
-- Account and region settings
-- Database configuration
-- Warehouse settings
-  - Size and scaling options
-  - Auto-suspend/resume settings
-- Role and user management
-- Schema configuration
-- File format definitions
-- Storage integrations (S3, Azure)
-
-### Usage for Data Platform
-
-1. Clone this repository
-2. Update the configuration files with your specific values:
+1. **Clone the Repository**
    ```bash
-   cp configs/main.tfvars configs/main.tfvars.example
-   # Edit configs/main.tfvars with your values
+   git clone [repository-url]
+   cd cloud-dev
    ```
 
-3. Required values to set:
-   - `snowflake_account`: Your Snowflake account identifier
-   - `snowflake_user_password`: Secure password for the Snowflake user
-   - `snowflake_user_email`: Email address for the Snowflake user
-   - Storage integration paths in `snowflake_storage_integrations`
+2. **Configure Environment**
+   ```bash
+   # Copy example configurations
+   cp configs/main.tfvars.example configs/main.tfvars
+   cp configs/databricks.tfvars.example configs/databricks.tfvars
+   cp configs/snowflake.tfvars.example configs/snowflake.tfvars
+   
+   # Edit configuration files with your values
+   ```
 
-4. Initialize Terraform:
+3. **Initialize Terraform**
    ```bash
    terraform init
    ```
 
-5. Review the planned changes:
+4. **Deploy Infrastructure**
    ```bash
+   # Review planned changes
    terraform plan -var-file="configs/main.tfvars"
-   ```
-
-6. Apply the configuration:
-   ```bash
+   
+   # Apply changes
    terraform apply -var-file="configs/main.tfvars"
    ```
 
-### Security Considerations for Data Platform
+## Data Platform Configuration
 
-1. Sensitive Values:
-   - Never commit sensitive values directly in the configuration files
-   - Use environment variables or a secrets management solution for sensitive data
-   - Consider using Azure Key Vault or similar for credential management
+### Databricks Setup
 
-2. Network Security:
-   - Configure VNet integration for Databricks when required
-   - Set appropriate IP restrictions for Snowflake access
-   - Use private endpoints where possible
+The Databricks configuration includes:
+- Workspace configuration
+- Network settings
+- Cluster management
+- Resource group configuration
 
-3. Access Control:
-   - Follow the principle of least privilege for Snowflake roles
-   - Implement appropriate RBAC for Databricks workspace
-   - Use managed identities where possible
+Key configuration files:
+- `configs/databricks/main.tfvars`
+- `configs/databricks_variables.tf`
 
-### Resource Naming Convention
+### Snowflake Setup
 
-Resources follow the following naming convention:
+The Snowflake configuration includes:
+- Account and region settings
+- Database and warehouse configuration
+- User and role management
+- Storage integrations
+
+Key configuration files:
+- `configs/snowflake/main.tfvars`
+- `configs/snowflake_variables.tf`
+
+## Security Best Practices
+
+1. **Credential Management**
+   - Use environment variables for sensitive data
+   - Implement secrets management solutions
+   - Never commit credentials to version control
+
+2. **Network Security**
+   - Configure VNet integration where applicable
+   - Implement IP restrictions
+   - Use private endpoints
+
+3. **Access Control**
+   - Follow principle of least privilege
+   - Implement RBAC
+   - Use managed identities
+
+## Resource Naming Convention
+
+Resources follow standardized naming patterns:
 - Databricks: `{project_name}-{environment}-{resource_type}`
 - Snowflake: `{project_name}_{environment}_{resource_type}`
 
-### File Formats
+## Maintenance and Operations
 
-Pre-configured file formats include:
-- CSV: Standard CSV format with header skipping
-- JSON: JSON format with array stripping
-- Parquet: Optimized for columnar storage
+1. **Regular Maintenance**
+   - Monitor resource usage
+   - Update configurations as needed
+   - Review and optimize costs
 
-### Storage Integrations
-
-Pre-configured storage integrations for:
-- Amazon S3
-- Azure Blob Storage
-
-Update the storage paths in `snowflake_storage_integrations` with your actual bucket/container paths.
-
-### Maintenance
-
-1. Regular Updates:
-   - Review and update cluster configurations based on usage patterns
-   - Monitor warehouse sizes and adjust as needed
-   - Update file formats as new data types are introduced
-
-2. Cost Optimization:
-   - Monitor Databricks cluster usage and adjust auto-termination settings
-   - Review Snowflake warehouse sizes and auto-suspend settings
-   - Clean up unused resources regularly
-
-### Troubleshooting
-
-Common issues and solutions:
-
-1. Databricks:
-   - VNet integration issues: Check subnet configurations
-   - Cluster startup failures: Verify node types and quotas
-   - Permission issues: Review RBAC assignments
-
-2. Snowflake:
-   - Connection issues: Verify account identifier and credentials
-   - Storage integration failures: Check IAM roles and permissions
-   - Warehouse suspension: Review auto-suspend settings
+2. **Troubleshooting**
+   - Check cloud provider logs
+   - Verify network connectivity
+   - Review access permissions
 
 ## Contributing
 
@@ -180,4 +160,8 @@ Common issues and solutions:
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details. 
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+For issues and feature requests, please use the GitHub issue tracker. 
