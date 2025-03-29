@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  cloud-dev:
+    build: .
+    volumes:
+      - .:/workspace
+      - ~/.aws:/home/clouddev/.aws
+      - ~/.azure:/home/clouddev/.azure
+      - ~/.config/gcloud:/home/clouddev/.config/gcloud
+      - ~/.kube:/home/clouddev/.kube
+      - ~/.terraform.d:/home/clouddev/.terraform.d
+    environment:
+      - AWS_PROFILE=default
+      - AZURE_SUBSCRIPTION_ID=${AZURE_SUBSCRIPTION_ID}
+      - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT}
+    ports:
+      - "3000:3000"  # For local development
+      - "8080:8080"  # For API endpoints
+    command: /bin/bash
+
+  # Local development database
+  postgres:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=clouddev
+      - POSTGRES_PASSWORD=development
+      - POSTGRES_DB=clouddev
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Redis for caching
+  redis:
+    image: redis:6
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  # MinIO for local S3-compatible storage
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data: 
