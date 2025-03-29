@@ -1,0 +1,45 @@
+{
+    "editor.formatOnSave": true,
+    "editor.rulers": [
+        80
+    ],
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "terraform.validateOnSave": true,
+    "terraform.formatOnSave": true,
+    "terraform.languageServer.enabled": true,
+    "yaml.validate": true,
+    "yaml.format.enable": true,
+    "json.validate.enable": true,
+    "json.format.enable": true,
+    "docker.enabled": true,
+    "docker.languageServer.enabled": true,
+    "kubernetes.enabled": true,
+    "kubernetes.languageServer.enabled": true,
+    "cloudcode.kubernetes.enabled": true,
+    "cloudcode.kubernetes.languageServer.enabled": true,
+    "cloudcode.kubernetes.languageServer.logRotateMaxFiles": 5,
+    "cloudcode.kubernetes.languageServer.logRotateMaxAge": 7,
+    "cloudcode.kubernetes.languageServer.logRotateMaxSize": 10485760,
+    "python.linting.enabled": true,
+    "python.formatting.provider": "black",
+    "python.linting.pylintEnabled": true,
+    "python.linting.flake8Enabled": true,
+    "[terraform]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "hashicorp.terraform"
+    },
+    "[yaml]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "redhat.vscode-yaml"
+    },
+    "[json]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "[python]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "ms-python.python"
+    }
+}
