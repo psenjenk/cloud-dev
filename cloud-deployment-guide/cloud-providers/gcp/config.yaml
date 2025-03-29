@@ -1,0 +1,58 @@
+imports:
+  - path: network.jinja
+  - path: compute.jinja
+  - path: storage.jinja
+
+resources:
+  # Network Resources
+  - name: network
+    type: network.jinja
+    properties:
+      name: my-network
+      autoCreateSubnetworks: false
+      routingMode: GLOBAL
+
+  - name: subnet
+    type: network.jinja
+    properties:
+      name: my-subnet
+      network: $(ref.network.selfLink)
+      ipCidrRange: 10.0.0.0/24
+      region: us-central1
+
+  - name: firewall
+    type: network.jinja
+    properties:
+      name: allow-ssh-http
+      network: $(ref.network.selfLink)
+      sourceRanges: ["0.0.0.0/0"]
+      targetTags: ["web-server"]
+      allowed:
+        - IPProtocol: tcp
+          ports: ["22", "80"]
+
+  # Compute Resources
+  - name: instance
+    type: compute.jinja
+    properties:
+      name: my-instance
+      zone: us-central1-a
+      machineType: e2-micro
+      image: ubuntu-os-cloud/ubuntu-2004-lts
+      network: $(ref.network.selfLink)
+      subnetwork: $(ref.subnet.selfLink)
+      tags:
+        items: ["web-server"]
+
+  # Storage Resources
+  - name: bucket
+    type: storage.jinja
+    properties:
+      name: my-bucket-${PROJECT_ID}
+      location: US
+      storageClass: STANDARD
+      versioning:
+        enabled: true
+      iamConfiguration:
+        uniformBucketLevelAccess:
+          enabled: true 

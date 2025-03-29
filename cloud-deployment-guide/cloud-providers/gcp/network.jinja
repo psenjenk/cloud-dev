@@ -1,0 +1,32 @@
+{% if properties.get('type') == 'network' %}
+resources:
+- name: {{ properties['name'] }}
+  type: compute.v1.network
+  properties:
+    name: {{ properties['name'] }}
+    autoCreateSubnetworks: {{ properties['autoCreateSubnetworks'] }}
+    routingConfig:
+      routingMode: {{ properties['routingMode'] }}
+
+{% elif properties.get('type') == 'subnet' %}
+resources:
+- name: {{ properties['name'] }}
+  type: compute.v1.subnetwork
+  properties:
+    name: {{ properties['name'] }}
+    network: {{ properties['network'] }}
+    ipCidrRange: {{ properties['ipCidrRange'] }}
+    region: {{ properties['region'] }}
+
+{% elif properties.get('type') == 'firewall' %}
+resources:
+- name: {{ properties['name'] }}
+  type: compute.v1.firewall
+  properties:
+    name: {{ properties['name'] }}
+    network: {{ properties['network'] }}
+    sourceRanges: {{ properties['sourceRanges'] }}
+    targetTags: {{ properties['targetTags'] }}
+    allowed: {{ properties['allowed'] }}
+    direction: INGRESS
+    priority: 1000 

@@ -1,0 +1,9 @@
+resources:
+- name: {{ properties['name'] }}
+  type: storage.v1.bucket
+  properties:
+    name: {{ properties['name'] }}
+    location: {{ properties['location'] }}
+    storageClass: {{ properties['storageClass'] }}
+    versioning: {{ properties['versioning'] }}
+    iamConfiguration: {{ properties['iamConfiguration'] }} 
