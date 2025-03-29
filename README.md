@@ -1,5 +1,16 @@
 # Cloud Deployment Guide for Developers
 
+## About
+
+This repository contains a comprehensive guide and automation scripts for deploying cloud infrastructure across multiple cloud providers (AWS, Azure, and GCP). It serves as a practical reference for developers who need to work with different cloud platforms, offering both CLI-based and Infrastructure-as-Code (Terraform) approaches.
+
+Key features:
+- Multi-cloud deployment guides
+- Infrastructure as Code examples using Terraform
+- Docker containerization support
+- Step-by-step CLI instructions
+- Best practices for cloud resource management
+
 This guide provides practical steps for deploying resources on AWS, Azure, and GCP using both CLI commands and Terraform.
 
 ## Prerequisites
